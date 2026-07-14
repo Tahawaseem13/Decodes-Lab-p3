@@ -42,9 +42,11 @@ courses = [
 df = pd.DataFrame(courses)
 df["Content"] = df["Course"] + " " + df["Category"]
 
-print("\n========== Available Categories ==========")
-print(df["Category"].unique())
+print("=" * 50)
+print("      AI COURSE RECOMMENDATION SYSTEM")
+print("=" * 50)
 
+print(df[["Course", "Category"]])
 
 choice = input("\nEnter your interests (comma separated): ")
 
@@ -74,16 +76,19 @@ print("\n========== Top Recommendations ==========")
 
 if len(recommendations) > 0:
 
-    recommendations = recommendations.sort_values(
+    top_recommendations = recommendations.sort_values(
         by="Score",
         ascending=False
-    )
-
-    print(
-        recommendations[
-            ["Course", "Category", "Score"]
-        ]
-    )
+    ).head(5)
+    top_recommendations["Score"] = top_recommendations["Score"].round(2)
+    print(top_recommendations[["Course", "Category", "Score"]])
 
 else:
-    print("No recommendations found.")
+    print(" No matching courses found.")
+    print("\nTry searching with:")
+    print("- AI")
+    print("- Programming")
+    print("- Web")
+    print("- Data Science")
+    
+print("\nThank you for using the AI Recommendation System!")  
