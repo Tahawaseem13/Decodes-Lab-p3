@@ -1,4 +1,6 @@
 import pandas as pd
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.metrics.pairwise import cosine_similarity
 
 
 courses = [
@@ -38,6 +40,7 @@ courses = [
 
 # Create DataFrame
 df = pd.DataFrame(courses)
+df["Content"] = df["Course"] + " " + df["Category"]
 
 print("\n========== Available Categories ==========")
 print(df["Category"].unique())
@@ -50,11 +53,23 @@ interests = [
     for interest in choice.split(",")
 ]
 
+vectorizer = TfidfVectorizer()
+
+tfidf_matrix = vectorizer.fit_transform(df["Content"])
+
+user_vector = vectorizer.transform([choice])
+
+similarity = cosine_similarity(
+    user_vector,
+    tfidf_matrix
+)
+
 recommendations = df[
     df["Category"].str.lower().isin(interests)
 ].copy()
-
-recommendations["Score"] = 100
+recommendations["Score"] = similarity.flatten()[
+    recommendations.index
+] * 100
 print("\n========== Top Recommendations ==========")
 
 if len(recommendations) > 0:
